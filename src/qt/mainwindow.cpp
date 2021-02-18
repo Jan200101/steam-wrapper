@@ -5,6 +5,7 @@
 
 #include <iostream>
 
+#include <cerrno>
 #include <cstring>
 #include <unistd.h>
 
@@ -22,9 +23,9 @@ MainWindow::MainWindow(char** pargv)
     this->verticalLayout = new QVBoxLayout(centralwidget);
     this->setCentralWidget(centralwidget);
 
-    char* prgm = argv[0] + strlen(argv[0]);
+    this->prgm = argv[0] + strlen(argv[0]);
 
-    while (*(prgm-1) != SEPERATOR) --prgm;
+    while (*(this->prgm-1) != SEPERATOR && this->prgm > argv[0]) --this->prgm;
 
     QDirIterator it(".", {"*" EXE}, QDir::Files);
     while (it.hasNext())
@@ -34,8 +35,7 @@ MainWindow::MainWindow(char** pargv)
 
         if (!isExe(filename.toStdString().c_str()) || filename.compare(prgm) == 0) continue;
 
-        QFile file(filename);
-        addButton(file.fileName());
+        addButton(filename);
 
     }
 }
@@ -52,10 +52,13 @@ void MainWindow::addButton(const QString name)
 
 void MainWindow::replaceProcess(QString name)
 {
-    execvp(name.toStdString().c_str(), this->argv);
-}
+    // variable length stack arrays are forbidden
+    // too bad
+    char exec[strlen(this->argv[0]) - strlen(this->prgm) + name.size()];
+    strcpy(exec, this->argv[0]);
+    strcpy(exec+(this->prgm-this->argv[0]), name.toStdString().c_str());
+    this->argv[0] = exec;
 
-MainWindow::~MainWindow()
-{
+    if (execvp(exec, this->argv) == -1)
+        printf("execvp() %s\n", strerror(errno));
 }
-

@@ -12,7 +12,6 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(char**);
-    ~MainWindow();
 
     void addButton(QString);
 
@@ -21,6 +20,7 @@ private:
     QVBoxLayout *verticalLayout;
 
     char** argv;
+    char* prgm;
 
 public slots:
 	void replaceProcess(QString);

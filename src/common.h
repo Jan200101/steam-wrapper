@@ -19,12 +19,7 @@
 extern "C" {
 #endif
 
-struct stat getStat(const char* path);
-int isFile(const char* path);
-int isDir(const char* path);
 int isExe(const char* path);
-
-int removeDir(const char *path);
 
 #ifdef __cplusplus
 }
