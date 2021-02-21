@@ -9,4 +9,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(core STATIC ${CORE_SOURCES})
 
-add_subdirectory(qt)
+foreach(VER ${VERSIONS})
+    if(COMPILE_${VER})
+        string(TOLOWER ${VER} VER_LOWER)
+        add_subdirectory(${VER_LOWER})
+    endif()
+endforeach()
