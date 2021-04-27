@@ -52,9 +52,7 @@ void MainWindow::addButton(const QString name)
 
 void MainWindow::replaceProcess(QString name)
 {
-    // variable length stack arrays are forbidden
-    // too bad
-    char exec[strlen(this->argv[0]) - strlen(this->prgm) + name.size()];
+    char* exec = new char[strlen(this->argv[0]) - strlen(this->prgm) + name.size()];
     strcpy(exec, this->argv[0]);
     strcpy(exec+(this->prgm-this->argv[0]), name.toStdString().c_str());
     this->argv[0] = exec;
